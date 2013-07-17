@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package info.cpit.coffeepit.bv.entities;
+package info.coffeepit.bv.entities;
 
-import info.cpit.coffeepit.bv.listener.LopChangeListener;
+import info.coffeepit.bv.listener.LopChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.sql.Date;

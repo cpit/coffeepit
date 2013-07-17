@@ -2,33 +2,44 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package info.cpit.coffeepit.bv.entities;
+package info.coffeepit.bv.entities;
 
-import info.cpit.coffeepit.bv.VolljaehrigConstraint;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
  * @author Chris
  */
 @Entity
-public class Person implements Serializable {
+public class Lop implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @NotNull
+    @Size (min = 2, max = 100)
     private String name;
-    @Temporal (TemporalType.DATE)
-    @VolljaehrigConstraint
-    private Calendar geburtsdatum;
+    
+
+    @ManyToMany
+    private List<LopItem> items;
+
+    public List<LopItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<LopItem> items) {
+        this.items = items;
+    }
 
     public String getName() {
         return name;
@@ -37,15 +48,8 @@ public class Person implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public Calendar getGeburtsdatum() {
-        return geburtsdatum;
-    }
-
-    public void setGeburtsdatum(Calendar geburtsdatum) {
-        this.geburtsdatum = geburtsdatum;
-    }
     
+
     public Long getId() {
         return id;
     }
@@ -64,10 +68,10 @@ public class Person implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Person)) {
+        if (!(object instanceof Lop)) {
             return false;
         }
-        Person other = (Person) object;
+        Lop other = (Lop) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -76,7 +80,7 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return "info.cpit.coffeepit.bv.entities.Person[ id=" + id + " ]";
+        return "info.cpit.coffeepit.bv.entities.Lop[ id=" + id + " ]";
     }
     
 }

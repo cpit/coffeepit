@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package info.cpit.coffeepit.bv;
+package info.coffeepit.bv;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Chris
  */
-public class VolljaehrigConstraintValidator implements ConstraintValidator<VolljaehrigConstraint, info.cpit.coffeepit.bv.entities.Person> {
+public class VolljaehrigConstraintValidator implements ConstraintValidator<VolljaehrigConstraint, info.coffeepit.bv.entities.Person> {
 
     @Override
     public void initialize(VolljaehrigConstraint constraintAnnotation) {
@@ -19,7 +19,7 @@ public class VolljaehrigConstraintValidator implements ConstraintValidator<Vollj
     }
 
     @Override
-    public boolean isValid(info.cpit.coffeepit.bv.entities.Person value, ConstraintValidatorContext context) {
+    public boolean isValid(info.coffeepit.bv.entities.Person value, ConstraintValidatorContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
