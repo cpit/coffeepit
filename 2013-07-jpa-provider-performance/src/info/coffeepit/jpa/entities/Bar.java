@@ -19,7 +19,6 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Bar implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,6 +26,7 @@ public class Bar implements Serializable {
     private Foo foo;
     private String someText;
     private BigDecimal someNumber;
+    private static final long serialVersionUID = 1L;
 
     public Bar() {
     }

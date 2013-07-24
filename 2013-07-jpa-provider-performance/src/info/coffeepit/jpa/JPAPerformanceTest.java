@@ -101,7 +101,7 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
                 new PerformanceInvocationHandler(
                 new JPAPerformanceTest(em), persistenceUnitName));
         DatenGenerator generator = new DatenGenerator();
-        Collection<Foo> sampleData = generator.generateData(numberFoos, numberBars);
+        Collection<Foo> sampleData = generator.generateFooObjects(numberFoos, numberBars);
         performanceTest.deleteAllValues();
         performanceTest.insertData(sampleData);
         for (Foo foo : sampleData) {
@@ -110,14 +110,10 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
             for (Bar bar : foo.getBars()) {
                 bar.setSomeText("A new dummy Text (" + generator.generateBigDecimal() + ")");
                 bar.setSomeNumber(generator.generateBigDecimal());
-
             }
         }
-
         performanceTest.updateValues1(sampleData);
         performanceTest.updateValues2(sampleData);
-
-
         performanceTest.selectFromDb1();
     }
 

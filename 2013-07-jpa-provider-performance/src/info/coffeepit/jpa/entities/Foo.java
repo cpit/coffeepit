@@ -12,15 +12,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 
 /**
- * Testklasse "Foo", mit insgesamt 10 Properties und einer one-to-many-Relation
- * zur Klasse "Bar"
+ * Testklasse "Foo", mit insgesamt 10 Properties und einer one-to-many-Relation zur Klasse "Bar"
  *
  * @author Chris
  */
 @Entity
 public class Foo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,6 +27,7 @@ public class Foo implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "foo")
     @OrderColumn(name = "reihenfolge")
     private List<Bar> bars;
+    private static final long serialVersionUID = 1L;
 
     public Foo() {
     }

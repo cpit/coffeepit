@@ -21,7 +21,7 @@ public class DatenGenerator {
     /**
      * Wertebereich der generierten Zahlen
      */
-    private static final int maxInt = 10;
+    private static final int MAXINT = 10;
 
     public DatenGenerator() {
     }
@@ -33,25 +33,16 @@ public class DatenGenerator {
      * @param numberBars Anzahl an Bar-Objekten, die jeweils in einem Foo-Objekt sind.
      * @return Collection mit Foo-Objekten
      */
-    public List<Foo> generateData(int numberFoos, int numberBars) {
-        List<Foo> foos = new ArrayList<>(numberBars);
+    public List<Foo> generateFooObjects(int numberFoos, int numberBars) {
+        List<Foo> foos = new ArrayList<>(numberFoos);
         for (int i = 0; i < numberFoos; i++) {
-            Foo foo = new Foo("A dummy text: " + generateBigDecimal().toString(),
-                    generateBigDecimal());
-            List<Bar> bars = generateBars(foo, numberBars);
+            Foo foo = new Foo("Dummy Text " + random.nextInt(MAXINT),
+                    new BigDecimal(random.nextInt(MAXINT)));
+            List<Bar> bars = generateBarObjects(foo, numberBars);
             foo.setBars(bars);
             foos.add(foo);
         }
         return foos;
-    }
-
-    /**
-     * Erzeugt eine zufaellige BigDecimal-Zahl.
-     *
-     * @return
-     */
-    public BigDecimal generateBigDecimal() {
-        return new BigDecimal(random.nextInt(maxInt));
     }
 
     /**
@@ -61,11 +52,11 @@ public class DatenGenerator {
      * @param numberBars Anzahl an Bar-Objekten, die erzeugt werden.
      * @return Collection mit Bar-Objekten
      */
-    private List<Bar> generateBars(Foo foo, int numberBars) {
+    private List<Bar> generateBarObjects(Foo foo, int numberBars) {
         List<Bar> bars = new ArrayList<>(numberBars);
         for (int i = 0; i < numberBars; i++) {
-            Bar bar = new Bar(foo, "Ein Dummy-Text: " + generateBigDecimal().toString(),
-                    generateBigDecimal());
+            Bar bar = new Bar(foo, "Dummy-Text " + random.nextInt(MAXINT),
+                    new BigDecimal(random.nextInt(MAXINT)));
             bars.add(bar);
         }
         return bars;
