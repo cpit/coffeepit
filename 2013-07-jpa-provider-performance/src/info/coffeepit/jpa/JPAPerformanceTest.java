@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package info.coffeepit.jpa;
 
 import info.coffeepit.jpa.util.PerformanceInvocationHandler;
@@ -9,11 +5,13 @@ import info.coffeepit.jpa.util.DatenGenerator;
 import info.coffeepit.jpa.entities.Bar;
 import info.coffeepit.jpa.entities.Foo;
 import java.lang.reflect.Proxy;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 /**
@@ -22,6 +20,8 @@ import javax.persistence.TypedQuery;
  */
 public class JPAPerformanceTest implements JPAPerformanceTestIF {
 
+    private static final int NUMBER_FOO_INSTANCES = 50;
+    private static final int NUMBER_BAR_INSTANCES = 50;
     private EntityManager entityManager;
 
     public JPAPerformanceTest(EntityManager em) {
@@ -30,11 +30,15 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
 
     @Override
     public void insertData(Collection<Foo> foos) {
-       entityManager.getTransaction().begin();
+        System.out.println("Anzahl Objekte vor dem Einfuegen:");
+        countAll();
+        entityManager.getTransaction().begin();
         for (Foo foo : foos) {
             entityManager.persist(foo);
         }
         entityManager.getTransaction().commit();
+        System.out.println("Anzahl Objekte nach dem Einfuegen:");
+        countAll();
     }
 
     @Override
@@ -43,13 +47,13 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
 
     @Override
     public void selectFromDb1() {
-        TypedQuery<Foo> q = entityManager.createQuery("select f from Foo f where f.string1 = '1'", Foo.class);
-        List <Foo> foos = q.getResultList();
-        System.out.println("Anzahl Foos: "+foos.size());
+        TypedQuery<Foo> q = entityManager.createQuery("select f from Foo f where f.someText like '%8%'", Foo.class);
+        List<Foo> foos = q.getResultList();
+        System.out.println("Anzahl Foos: " + foos.size());
     }
 
     @Override
-    public void updateValues(Collection<Foo> foos) {
+    public void updateValues1(Collection<Foo> foos) {
         entityManager.getTransaction().begin();
         for (Foo foo : foos) {
             entityManager.merge(foo);
@@ -58,46 +62,69 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
     }
 
     @Override
+    public void updateValues2(Collection<Foo> foos) {
+        entityManager.getTransaction().begin();
+        Query q = entityManager.createQuery("UPDATE Foo f SET f.someDecimalNumber = :newNumber WHERE f.someDecimalNumber = :oldNumber");
+        q.setParameter("oldNumber", new BigDecimal(6));
+        q.setParameter("newNumber", new BigDecimal(666));
+        System.out.println("Updated: " + q.executeUpdate() + " items");
+        entityManager.getTransaction().commit();
+    }
+
+    private void countAll() {
+        Query queryFoo = entityManager.createNativeQuery("select count(*) from Foo");
+        Query queryBar = entityManager.createNativeQuery("select count(*) from Bar");
+        System.out.println("Anzahl Foo-Objekte in DB: " + queryFoo.getSingleResult() + ", Bar-Objekte: " + queryBar.getSingleResult());
+    }
+
+    @Override
     public void countValues2() {
     }
 
     @Override
-    public void deleteValues1() {
+    public void deleteAllValues() {
+        countAll();
+        entityManager.getTransaction().begin();
+        Query q1 = entityManager.createQuery("select f from Foo f");
+        Query q2 = entityManager.createQuery("DELETE FROM Foo f WHERE f.someText like '%'");
+        System.out.println("Delete from Foo: " + q2.executeUpdate() + " items");
+        entityManager.getTransaction().commit();
+        countAll();
     }
 
     public static void runPerformanceTest(String persistenceUnitName, int numberFoos, int numberBars) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         EntityManager em = emf.createEntityManager();
         System.out.println("Persistence-Unit: " + persistenceUnitName);
-        JPAPerformanceTestIF performanceTest = (JPAPerformanceTestIF) Proxy.newProxyInstance(JPAPerformanceTestIF.class.getClassLoader(),
-                new Class<?>[]{JPAPerformanceTestIF.class},
-                new PerformanceInvocationHandler(new JPAPerformanceTest(em), persistenceUnitName));
+        JPAPerformanceTestIF performanceTest = (JPAPerformanceTestIF) Proxy.newProxyInstance(JPAPerformanceTestIF.class
+                .getClassLoader(), new Class<?>[]{JPAPerformanceTestIF.class},
+                new PerformanceInvocationHandler(
+                new JPAPerformanceTest(em), persistenceUnitName));
         DatenGenerator generator = new DatenGenerator();
         Collection<Foo> sampleData = generator.generateData(numberFoos, numberBars);
+        performanceTest.deleteAllValues();
         performanceTest.insertData(sampleData);
         for (Foo foo : sampleData) {
-            foo.setDecimal1(generator.generateBigDecimal());
-            foo.setDecimal2(generator.generateBigDecimal());
-            foo.setDecimal3(generator.generateBigDecimal());
-            foo.setDecimal4(generator.generateBigDecimal());
-            foo.setDecimal5(generator.generateBigDecimal());
+            foo.setSomeText("A new dummy Text (" + generator.generateBigDecimal() + ")");
+            foo.setSomeDecimalNumber(generator.generateBigDecimal());
             for (Bar bar : foo.getBars()) {
-                bar.setNumber1(generator.generateBigDecimal());
-                bar.setNumber2(generator.generateBigDecimal());
-                bar.setNumber3(generator.generateBigDecimal());
-                bar.setNumber4(generator.generateBigDecimal());
-                bar.setNumber5(generator.generateBigDecimal());
+                bar.setSomeText("A new dummy Text (" + generator.generateBigDecimal() + ")");
+                bar.setSomeNumber(generator.generateBigDecimal());
+
             }
         }
-        performanceTest.updateValues(sampleData);
-        performanceTest.selectFromDb1();
 
+        performanceTest.updateValues1(sampleData);
+        performanceTest.updateValues2(sampleData);
+
+
+        performanceTest.selectFromDb1();
     }
 
     public static void main(String... args) throws Exception {
-        runPerformanceTest("openJPA-2.2.2",200,200);
-        runPerformanceTest("eclipseLink-2.1",200,200);
-        runPerformanceTest("openJPA-2.2.2",200,200);
-         runPerformanceTest("eclipseLink-2.1",200,200);
+        runPerformanceTest("openJPA-2.2.2", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
+        runPerformanceTest("eclipseLink-2.1", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
+        runPerformanceTest("hibernate-4", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
+
     }
 }

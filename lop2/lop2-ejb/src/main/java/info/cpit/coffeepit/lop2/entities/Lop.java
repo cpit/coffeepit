@@ -6,11 +6,13 @@ package info.cpit.coffeepit.lop2.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 /**
  *
@@ -25,8 +27,9 @@ public class Lop implements Serializable {
     
     private String name;
     
-    @OneToMany
-    private Collection<LopItem> items;
+    @OneToMany (mappedBy = "lop")
+    @OrderBy ("dueDate")
+    private List<LopItem> items;
 
     public String getName() {
         return name;
@@ -36,11 +39,11 @@ public class Lop implements Serializable {
         this.name = name;
     }
 
-    public Collection<LopItem> getItems() {
+    public List<LopItem> getItems() {
         return items;
     }
 
-    public void setItems(Collection<LopItem> items) {
+    public void setItems(List<LopItem> items) {
         this.items = items;
     }
     

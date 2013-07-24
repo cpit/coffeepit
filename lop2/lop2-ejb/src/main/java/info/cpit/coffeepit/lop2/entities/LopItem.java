@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -35,7 +37,10 @@ public class LopItem implements Serializable {
     private String todo;
     @Temporal (TemporalType.DATE)
     private Date dueDate;
-
+    @ManyToOne (optional = false)
+    @JoinColumn (name="lop", nullable = false)
+    private Lop lop;
+    
     public String getTodo() {
         return todo;
     }

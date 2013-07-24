@@ -18,82 +18,42 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class Bar implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @ManyToOne 
+    @ManyToOne
     private Foo foo;
-    private String bar1;
-    private String bar2;
-    private String bar3;
-    private String bar4;
-    private String bar5;
-    private BigDecimal number1;
-    private BigDecimal number2;
-    private BigDecimal number3;
-    private BigDecimal number4;
-    private BigDecimal number5;
+    private String someText;
+    private BigDecimal someNumber;
 
     public Bar() {
     }
 
-    public Bar(Foo foo, String bar1, String bar2, String bar3, String bar4, String bar5, BigDecimal number1, BigDecimal number2, BigDecimal number3, BigDecimal number4, BigDecimal number5) {
-        this.bar1 = bar1;
-        this.bar2 = bar2;
-        this.bar3 = bar3;
-        this.bar4 = bar4;
-        this.bar5 = bar5;
-        this.number1 = number1;
-        this.number2 = number2;
-        this.number3 = number3;
-        this.number4 = number4;
-        this.number5 = number5;
+    /**
+     * Konstruktor mit allen Properties.
+     *
+     * @param foo Foo-Objekt
+     * @param someText Test-String 1
+     * @param someNumber Test-Zahl 1
+     */
+    public Bar(Foo foo, String aString, BigDecimal aNumber) {
+        this.someText = aString;
+        this.someNumber = aNumber;
+
     }
 
     public void setFoo(Foo foo) {
         this.foo = foo;
     }
 
-    public void setBar1(String bar1) {
-        this.bar1 = bar1;
+    public void setSomeText(String someText) {
+        this.someText = someText;
     }
 
-    public void setBar2(String bar2) {
-        this.bar2 = bar2;
-    }
-
-    public void setBar3(String bar3) {
-        this.bar3 = bar3;
-    }
-
-    public void setBar4(String bar) {
-        this.bar4 = bar;
-    }
-
-    public void setBar5(String bar5) {
-        this.bar5 = bar5;
-    }
-
-    public void setNumber1(BigDecimal number1) {
-        this.number1 = number1;
-    }
-
-    public void setNumber2(BigDecimal number2) {
-        this.number2 = number2;
-    }
-
-    public void setNumber3(BigDecimal number3) {
-        this.number3 = number3;
-    }
-
-    public void setNumber4(BigDecimal number4) {
-        this.number4 = number4;
-    }
-
-    public void setNumber5(BigDecimal number5) {
-        this.number5 = number5;
+    public void setSomeNumber(BigDecimal someNumber) {
+        this.someNumber = someNumber;
     }
 
     public Long getId() {
@@ -128,5 +88,4 @@ public class Bar implements Serializable {
     public String toString() {
         return "info.coffeepit.jpa.entities.Bar[ id=" + id + " ]";
     }
-    
 }

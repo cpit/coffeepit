@@ -29,4 +29,17 @@
             <property name="eclipselink.logging.thread" value="false"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="hibernate-4" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>info.coffeepit.jpa.entities.Bar</class>
+        <class>info.coffeepit.jpa.entities.Foo</class>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5432/Chris"/>
+            <property name="javax.persistence.jdbc.password" value="admin"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="Chris"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+        </properties>
+    </persistence-unit>
 </persistence>
