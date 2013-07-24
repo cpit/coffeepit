@@ -17,11 +17,11 @@ public class DatenGenerator {
     /**
      * Ein Random-Objekt
      */
-    private static final Random random = new Random();
+    public static final Random RANDOM = new Random();
     /**
      * Wertebereich der generierten Zahlen
      */
-    private static final int MAXINT = 10;
+    public static final int MAXINT = 10;
 
     public DatenGenerator() {
     }
@@ -36,8 +36,8 @@ public class DatenGenerator {
     public List<Foo> generateFooObjects(int numberFoos, int numberBars) {
         List<Foo> foos = new ArrayList<>(numberFoos);
         for (int i = 0; i < numberFoos; i++) {
-            Foo foo = new Foo("Dummy Text " + random.nextInt(MAXINT),
-                    new BigDecimal(random.nextInt(MAXINT)));
+            Foo foo = new Foo("Dummy Text " + RANDOM.nextInt(MAXINT),
+                    new BigDecimal(RANDOM.nextInt(MAXINT)));
             List<Bar> bars = generateBarObjects(foo, numberBars);
             foo.setBars(bars);
             foos.add(foo);
@@ -55,8 +55,8 @@ public class DatenGenerator {
     private List<Bar> generateBarObjects(Foo foo, int numberBars) {
         List<Bar> bars = new ArrayList<>(numberBars);
         for (int i = 0; i < numberBars; i++) {
-            Bar bar = new Bar(foo, "Dummy-Text " + random.nextInt(MAXINT),
-                    new BigDecimal(random.nextInt(MAXINT)));
+            Bar bar = new Bar(foo, "Dummy-Text " + RANDOM.nextInt(MAXINT),
+                    new BigDecimal(RANDOM.nextInt(MAXINT)));
             bars.add(bar);
         }
         return bars;

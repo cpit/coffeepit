@@ -4,6 +4,8 @@ import info.coffeepit.jpa.util.PerformanceInvocationHandler;
 import info.coffeepit.jpa.util.DatenGenerator;
 import info.coffeepit.jpa.entities.Bar;
 import info.coffeepit.jpa.entities.Foo;
+import static info.coffeepit.jpa.util.DatenGenerator.MAXINT;
+import static info.coffeepit.jpa.util.DatenGenerator.RANDOM;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -20,8 +22,8 @@ import javax.persistence.TypedQuery;
  */
 public class JPAPerformanceTest implements JPAPerformanceTestIF {
 
-    private static final int NUMBER_FOO_INSTANCES = 50;
-    private static final int NUMBER_BAR_INSTANCES = 50;
+    private static final int NUMBER_FOO_INSTANCES = 500;
+    private static final int NUMBER_BAR_INSTANCES = 500;
     private EntityManager entityManager;
 
     public JPAPerformanceTest(EntityManager em) {
@@ -30,15 +32,11 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
 
     @Override
     public void insertData(Collection<Foo> foos) {
-        System.out.println("Anzahl Objekte vor dem Einfuegen:");
-        countAll();
         entityManager.getTransaction().begin();
         for (Foo foo : foos) {
             entityManager.persist(foo);
         }
         entityManager.getTransaction().commit();
-        System.out.println("Anzahl Objekte nach dem Einfuegen:");
-        countAll();
     }
 
     @Override
@@ -105,11 +103,11 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
         performanceTest.deleteAllValues();
         performanceTest.insertData(sampleData);
         for (Foo foo : sampleData) {
-            foo.setSomeText("A new dummy Text (" + generator.generateBigDecimal() + ")");
-            foo.setSomeDecimalNumber(generator.generateBigDecimal());
+            foo.setSomeText("A new dummy Text (" + DatenGenerator.RANDOM.nextInt(DatenGenerator.MAXINT) + ")");
+            foo.setSomeDecimalNumber(new BigDecimal(RANDOM.nextInt(MAXINT)));
             for (Bar bar : foo.getBars()) {
-                bar.setSomeText("A new dummy Text (" + generator.generateBigDecimal() + ")");
-                bar.setSomeNumber(generator.generateBigDecimal());
+                bar.setSomeText("A new dummy Text (" + DatenGenerator.RANDOM.nextInt(DatenGenerator.MAXINT) + ")");
+                bar.setSomeNumber(new BigDecimal(RANDOM.nextInt(MAXINT)));
             }
         }
         performanceTest.updateValues1(sampleData);
@@ -118,9 +116,8 @@ public class JPAPerformanceTest implements JPAPerformanceTestIF {
     }
 
     public static void main(String... args) throws Exception {
-        runPerformanceTest("openJPA-2.2.2", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
-        runPerformanceTest("eclipseLink-2.1", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
+        //runPerformanceTest("openJPA-2.2.2", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
+        //runPerformanceTest("eclipseLink-2.1", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
         runPerformanceTest("hibernate-4", NUMBER_FOO_INSTANCES, NUMBER_BAR_INSTANCES);
-
     }
 }
